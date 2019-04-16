@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Boggle</title>
+  <!-- <link rel="shorcut icon" href="icon.png" type="image/x-icon"> -->
+  <meta charset="UTF-8">
+
+  <!-- meta tags -->
+  <meta name="author" content="Xavier Morin">
+  <meta name="description" content="Boggle">
+  <meta name="keywords" content="Boggle, game, jeu">
+
+  <!-- Open Graph protocol : http://ogp.me/ -->
+  <meta property="og:title" content="Boggle">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="The game Boggle.">
+  <meta property="og:url" content="https://lenaindelaforetmagique.github.io/Boggle/">
+  <meta property="og:image" content="http://lenaindelaforetmagique.github.io/Boggle/screenshot.png">
+
+  <!-- Style -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="style.css" />
+  <!-- <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet"> -->
+</head>
+
+<body>
+  <div id="container">
+
+    <table id="boardgame">
+      <tbody id="grid"></tbody>
+    </table>
+    <div id="resetButton" class="button">Reset</div>
+    <div id="solutionButton" class="button">Show Solutions</div>
+    <div id="textBox"> </div>
+    <div id="scoreCell"> </div>
+    <div id="solutionsBox"> </div>
+
+    <!-- <p class="error">Certaines fonctionnalités de cette page ne sont pas prises en compte par votre navigateur, essayez-en un meilleur : Firefox, Chrome par exemple...</p> -->
+  </div>
+  <footer id="footer">
+    <p>
+      <a href="https://lenaindelaforetmagique.github.io/" target="_blank"> Copyright (c) 2019 Xavier Morin</a>
+    </p>
+  </footer>
+  <script src="dictionary.js"></script>
+  <script src="boardGame.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

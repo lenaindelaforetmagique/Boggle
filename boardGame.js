@@ -1,0 +1,291 @@
+class TextBox {
+  constructor(parent_) {
+    this.dom = document.getElementById("textBox");
+    this.text = "";
+    this.initEvents();
+
+    this.parent = parent_;
+    this.dictionary = this.parent.solutionDictionary;
+  }
+
+  initEvents() {
+    var thiz = this;
+    document.onkeydown = function(e) {
+      // console.log(e.which);
+      if (e.key == " ") {
+        // space bar
+        thiz.parent.submit(thiz.text);
+        thiz.clear();
+      } else if (e.which == 8) {
+        thiz.backspace();
+      } else {
+        var letter = e.key;
+        letter = letter.toUpperCase();
+        var inL = ["À", "É", "È", "Ç", "Ù"];
+        var outL = ["A", "E", "E", "C", "U"];
+        for (var i = 0; i < inL.length; i++) {
+          letter = letter.replace(inL[i], outL[i]);
+        }
+        if ("ABCDEFGHJIKLMNOPQRSTUVWXYZ".indexOf(letter) > -1) {
+          thiz.appendLetter(letter);
+        }
+      }
+      thiz.update();
+    }
+  }
+
+  appendLetter(letter) {
+    letter = letter.toUpperCase();
+    this.text += letter;
+  }
+
+  backspace() {
+    this.text = this.text.substring(0, this.text.length - 1);
+  }
+
+  clear() {
+    this.text = "";
+  }
+
+  update() {
+    this.dom.innerHTML = this.text;
+    if (this.dictionary.loaded) {
+      var test = this.dictionary.testWord(this.text)
+      if (test == 0) { // return "'" + word + "' n'existe pas !";
+        this.dom.setAttribute("class", "false");
+      } else if (test == 1) { // return "'" + word + "' existe mais n'est pas terminal";
+        this.dom.setAttribute("class", "partial");
+      } else if (test == 2) { // return "'" + word + "' existe et est terminal";
+        this.dom.setAttribute("class", "ended");
+      } else if (test == 3) { // return "'" + word + "' existe et est terminal";
+        this.dom.setAttribute("class", "extendable");
+      }
+    }
+  }
+}
+
+
+class BoardGame {
+  constructor() {
+    this.dom = document.getElementById("grid");
+    this.grid = [];
+    this.solutions = [];
+    this.solutionDictionary = new DictionaryTree();
+    this.textBox = new TextBox(this);
+
+    this.foundWords = [];
+    this.totalScore = 0;
+    this.maxScore = 0;
+
+    this.dices = [
+      ["E", "T", "U", "K", "N", "O"],
+      ["E", "V", "G", "T", "I", "N"],
+      ["D", "E", "C", "A", "M", "P"],
+      ["I", "E", "L", "R", "U", "W"],
+      ["E", "H", "I", "F", "S", "E"],
+      ["R", "E", "C", "A", "L", "S"],
+      ["E", "N", "T", "D", "O", "S"],
+      ["O", "F", "X", "R", "I", "A"],
+      ["N", "A", "V", "E", "D", "Z"],
+      ["E", "I", "O", "A", "T", "A"],
+      ["G", "L", "E", "N", "Y", "U"],
+      ["B", "M", "A", "Q", "J", "O"],
+      ["T", "L", "I", "B", "R", "A"],
+      ["S", "P", "U", "L", "T", "E"],
+      ["A", "I", "M", "S", "O", "R"],
+      ["E", "N", "H", "R", "I", "S"]
+    ];
+
+    var thiz = this;
+    this.dictionary = new DictionaryTree();
+    this.dictionary.onload = function() {
+      console.log("start");
+      thiz.resetGame();
+    }
+    this.dictionary.loadFile("FR_ods7.dic");
+
+
+    this.resetButton = document.getElementById("resetButton");
+    this.resetButton.onclick = function(e) {
+      thiz.resetGame();
+    }
+
+    this.showSolutionButton = document.getElementById("solutionButton");
+    this.showSolutionButton.onclick = function(e) {
+      thiz.showSolutions();
+    }
+
+    this.scoreCell = document.getElementById("scoreCell");
+    this.solutionsBox = document.getElementById("solutionsBox");
+  }
+
+
+  updateScore() {
+    this.scoreCell.innerHTML = this.totalScore + " / " + this.maxScore + " points<br>" + this.foundWords.length + " / " + this.totalWords + " mots";
+
+  }
+
+  resetGame() {
+    this.foundWords = [];
+    this.totalScore = 0;
+    this.maxScore = 0;
+    this.solutions = [];
+    this.solutionDictionary = new DictionaryTree();
+
+    this.init();
+    this.solve();
+    removeChildren(this.solutionsBox);
+    this.updateScore();
+  }
+
+  showSolutions() {
+    removeChildren(this.solutionsBox);
+    for (var sol of this.solutions) {
+      var p_ = document.createElement("div");
+      p_.innerHTML = sol;
+      if (this.foundWords.indexOf(sol) > -1) {
+        // found
+        p_.setAttribute("class", "found");
+      } else {
+        p_.setAttribute("class", "notFound");
+        // not found
+      }
+      this.solutionsBox.appendChild(p_);
+    }
+  }
+
+
+  init() {
+
+    removeChildren(this.dom);
+
+    this.dices = Shuffle(this.dices);
+    for (var i = 0; i < 16; i++) {
+      this.dices[i] = Shuffle(this.dices[i]);
+    }
+
+    this.grid = [];
+    for (var i = 0; i < 4; i++) {
+      this.grid.push([]);
+      var line = document.createElement("tr");
+      for (var j = 0; j < 4; j++) {
+        var letter = this.dices[i * 4 + j][0];
+        this.grid[i].push(letter);
+        var letter = this.grid[i][j];
+        var cell = document.createElement("td");
+        line.appendChild(cell);
+
+        var div = document.createElement("div");
+        cell.appendChild(div);
+
+        var p = document.createElement("p");
+        div.appendChild(p);
+
+
+        if ("WZ".indexOf(letter) > -1) {
+          var u_ = document.createElement("u");
+          u_.innerHTML = letter;
+          p.appendChild(u_);
+        } else {
+          p.innerHTML = letter;
+        }
+        var angle = Math.floor(Math.random() * 4) * 90;
+        div.setAttribute("style", "transform:rotate(" + angle + "deg)");
+      }
+      this.dom.appendChild(line);
+    }
+  }
+
+
+  solve() {
+    var currentState = [];
+    for (var i = 0; i < 4; i++) {
+      currentState[i] = [];
+      for (var j = 0; j < 4; j++) {
+        currentState[i][j] = 0;
+      }
+    }
+
+    for (var i = 0; i < 4; i++) {
+      for (var j = 0; j < 4; j++) {
+        this.goDeeper(currentState, i, j, "");
+      }
+    }
+    this.solutions.sort();
+    for (var sol of this.solutions) {
+      this.solutionDictionary.addWord(sol);
+      this.maxScore += this.score(sol);
+    }
+    this.solutionDictionary.loaded = true;
+    this.textBox.dictionary = this.solutionDictionary;
+    this.totalWords = this.solutionDictionary.size;
+
+    console.log(this.solutions);
+  }
+
+
+  goDeeper(currentState, posi, posj, word) {
+    if ((0 <= posi && posi < 4) && (0 <= posj && posj < 4)) {
+      if (currentState[posi][posj] == 0) {
+        word += this.grid[posi][posj];
+        var res = this.dictionary.testWord(word);
+        if (res > 0) {
+          var newState = [];
+          for (var i = 0; i < 4; i++) {
+            newState[i] = [];
+            for (var j = 0; j < 4; j++) {
+              newState[i][j] = currentState[i][j];
+            }
+          }
+          newState[posi][posj] = 1;
+
+          if (res >= 2) {
+            if (this.solutions.indexOf(word) == -1 && word.length > 2) {
+              this.solutions.push(word);
+            }
+          }
+
+          // explores neighboring
+          this.goDeeper(newState, posi - 1, posj - 1, word);
+          this.goDeeper(newState, posi - 1, posj, word);
+          this.goDeeper(newState, posi - 1, posj + 1, word);
+          this.goDeeper(newState, posi, posj - 1, word);
+          this.goDeeper(newState, posi, posj + 1, word);
+          this.goDeeper(newState, posi + 1, posj - 1, word);
+          this.goDeeper(newState, posi + 1, posj, word);
+          this.goDeeper(newState, posi + 1, posj + 1, word);
+        }
+      }
+    }
+  }
+
+  score(word) {
+    var len = word.length;
+    var res = 0
+    if (len == 3) {
+      res = 1;
+    } else if (len == 4) {
+      res = 1;
+    } else if (len == 5) {
+      res = 2;
+    } else if (len == 6) {
+      res = 3;
+    } else if (len == 7) {
+      res = 5;
+    } else if (len >= 8) {
+      res = 11;
+    }
+    return res;
+  }
+
+  submit(word) {
+    if (this.solutionDictionary.testWord(word) >= 2) {
+      if (this.foundWords.indexOf(word) == -1) {
+        this.totalScore += this.score(word);
+        this.foundWords.push(word);
+        this.updateScore();
+
+      }
+    }
+  }
+}
