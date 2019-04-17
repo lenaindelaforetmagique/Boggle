@@ -17,6 +17,7 @@ class TextBox {
         // space bar
         thiz.submit();
       } else if (e.which == 8) {
+        e.preventDefault();
         thiz.backspace();
       } else {
         var letter = e.key;
