@@ -1,16 +1,25 @@
 html, body {
-  font-family: 'Comic sans ms', monospace;
+  font-family: 'Overlock', monospace;
   background-color: #505050;
   margin: auto;
-  width: 300px;
+  max-width: 320px;
+  align-items: center;
 }
 
-header {
-  color: white;
+#container {
+  /* width: 100%; */
+  /* height: 600px; */
+  background: white;
+  border: solid;
+  border-width: 2px;
+  border-color: #CCCCCC;
 }
 
-p {
-  color: white;
+h1 {
+  color: black;
+  background-color: #f0f0f0;
+  padding: 0;
+  margin: 0;
 }
 
 .button {
@@ -24,22 +33,21 @@ p {
   border-color: #CCCCCC;
 }
 
-#submitButton {
-  font-size: 30px;
+.line {
+  width: 320px;
+  margin: auto;
 }
 
-#textBox {
-  /* display: inline-block; */
-  background: white;
-  margin: 5px;
-  padding: 5px;
-  cursor: text;
-  border: solid;
-  border-width: 2px;
-  border-color: black;
-  height: 30px;
-  width: 200px;
+#submitButton, #bckspButton {
+  font-size: 30px;
+  width: 120px;
   text-align: center;
+  margin: 10px;
+}
+
+table {
+  max-width: 400%;
+  margin: auto;
 }
 
 #scoreCell {
@@ -53,16 +61,8 @@ p {
   border-color: blackqsdfqsdf;
   /* height: 30px; */
   width: 150px;
+  margin: auto;
   text-align: center;
-}
-
-#container {
-  width: 400px;
-  /* height: 600px; */
-  background: white;
-  border: solid;
-  border-width: 2px;
-  border-color: #CCCCCC;
 }
 
 /* -- Boardgame -- */
@@ -82,8 +82,8 @@ p {
   border-width: 2px;
   border-radius: 15px;
   border-style: solid;
-  width: 70px;
-  height: 70px;
+  width: 65px;
+  height: 65px;
   cursor: pointer;
 }
 
@@ -99,8 +99,23 @@ p {
   font-family: Arial;
   font-weight: bold;
   padding: 0;
-  margin: 15px;
+  margin: 12.5px;
   color: black;
+}
+
+#textBox {
+  /* display: inline-block; */
+  background: white;
+  width: 200px;
+  margin: 5px auto;
+  /* padding: auto; */
+  cursor: text;
+  border: solid;
+  border-width: 2px;
+  border-color: black;
+  height: 30px;
+  text-align: center;
+  font-size: 24px;
 }
 
 #textBox.extendable {
@@ -143,13 +158,10 @@ p {
   color: gray;
 }
 
-/* footer {
-  position: absolute;
-  top: 95%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-} */
+footer {
+  text-align: center;
+}
+
 a {
   text-decoration: none;
 }
