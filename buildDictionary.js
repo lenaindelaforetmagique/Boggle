@@ -32,9 +32,9 @@ document.getElementById('file').onchange = function() {
     }
 
     console.log(dictionary);
-    // var file = JSON.stringify(dictionary);
-    //
-    // download("dico.json", file);
+    var file = JSON.stringify(dictionary);
+
+    download("dico.json", file);
 
     // console.log(file);
 

@@ -32,7 +32,7 @@ p {
   cursor: text;
   border: solid;
   border-width: 2px;
-  border-color: blackqsdfqsdf;
+  border-color: black;
   height: 30px;
   width: 200px;
   text-align: center;
@@ -80,6 +80,11 @@ p {
   border-style: solid;
   width: 70px;
   height: 70px;
+  cursor: pointer;
+}
+
+#grid div:hover {
+  background: #D0D0C0;
 }
 
 #grid p {

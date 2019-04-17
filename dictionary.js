@@ -7,8 +7,12 @@ class DictionaryTree {
     // this.loadFile(fileURL);
   }
 
+  removeWord(word) {
+    this.tree.removeSuffix(word);
+    this.size--;
+  }
+
   addWord(word) {
-    word = word.replace("\r", "");
     this.tree.addSuffix(word);
     this.size++;
   }
@@ -19,8 +23,6 @@ class DictionaryTree {
 
   onload() {
     // EMPTY
-    console.log('termine');
-    console.log(thiz.tree);
   }
 
   loadFile(fileURL) {
@@ -36,6 +38,7 @@ class DictionaryTree {
     request.onload = function() {
       var lines = request.response.split('\n');
       for (var i = 0; i < lines.length; i++) {
+        lines[i] = lines[i].replace("\r", "");
         thiz.addWord(lines[i]);
       }
       thiz.loaded = true;
@@ -69,6 +72,26 @@ class LetterNode {
     this.face = face;
     this.ended = false;
     this.children = [];
+  }
+
+  removeSuffix(suffix) {
+    if (suffix.length > 0) {
+      var firstLetter = suffix.substring(1, 0);
+      var i = 0;
+      while (i < this.children.length && firstLetter != this.children[i].face) {
+        i++;
+      }
+      if (i == this.children.length) {
+        return; // not found (suffix doesn't exist here)
+      } else {
+        this.children[i].removeSuffix(suffix.substring(1));
+        if (this.children[i].ended == false && this.children[i].children.length == 0) {
+          this.children.splice(i, 1);
+        }
+      }
+    } else {
+      this.ended = false;
+    }
   }
 
   addSuffix(suffix) {

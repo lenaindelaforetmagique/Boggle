@@ -13,9 +13,9 @@ class TextBox {
     document.onkeydown = function(e) {
       // console.log(e.which);
       if (e.key == " ") {
+        e.preventDefault();
         // space bar
-        thiz.parent.submit(thiz.text);
-        thiz.clear();
+        thiz.submit();
       } else if (e.which == 8) {
         thiz.backspace();
       } else {
@@ -30,21 +30,28 @@ class TextBox {
           thiz.appendLetter(letter);
         }
       }
-      thiz.update();
     }
+  }
+
+  submit() {
+    this.parent.submit(this.text);
+    this.clear();
   }
 
   appendLetter(letter) {
     letter = letter.toUpperCase();
     this.text += letter;
+    this.update();
   }
 
   backspace() {
     this.text = this.text.substring(0, this.text.length - 1);
+    this.update();
   }
 
   clear() {
     this.text = "";
+    this.update();
   }
 
   update() {
@@ -115,6 +122,16 @@ class BoardGame {
       thiz.showSolutions();
     }
 
+    this.submitButton = document.getElementById("submitButton");
+    this.submitButton.onclick = function(e) {
+      thiz.textBox.submit();
+    }
+
+    this.bckspButton = document.getElementById("bckspButton");
+    this.bckspButton.onclick = function(e) {
+      thiz.textBox.backspace();
+    }
+
     this.scoreCell = document.getElementById("scoreCell");
     this.solutionsBox = document.getElementById("solutionsBox");
   }
@@ -122,7 +139,6 @@ class BoardGame {
 
   updateScore() {
     this.scoreCell.innerHTML = this.totalScore + " / " + this.maxScore + " points<br>" + this.foundWords.length + " / " + this.totalWords + " mots";
-
   }
 
   resetGame() {
@@ -132,6 +148,7 @@ class BoardGame {
     this.solutions = [];
     this.solutionDictionary = new DictionaryTree();
 
+    this.textBox.clear();
     this.init();
     this.solve();
     removeChildren(this.solutionsBox);
@@ -154,9 +171,23 @@ class BoardGame {
     }
   }
 
+  updateFoundWords() {
+    removeChildren(this.solutionsBox);
+    this.foundWords.sort();
+    for (var sol of this.foundWords) {
+      var p_ = document.createElement("div");
+      p_.innerHTML = sol;
+      p_.setAttribute("class", "found");
+      // p_.setAttribute("class", "notFound");
+      this.solutionsBox.appendChild(p_);
+    }
+
+
+  }
+
 
   init() {
-
+    var thiz = this;
     removeChildren(this.dom);
 
     this.dices = Shuffle(this.dices);
@@ -177,6 +208,13 @@ class BoardGame {
 
         var div = document.createElement("div");
         cell.appendChild(div);
+        div.setAttribute("value", letter);
+        div.onclick = function(e) {
+          // console.log(this.firstChild.innerHTML);
+          thiz.textBox.appendLetter(this.getAttribute("value"));
+          // thiz.textBox.appendLetter(this.firstChild.innerHTML);
+          thiz.textBox.update();
+        }
 
         var p = document.createElement("p");
         div.appendChild(p);
@@ -190,7 +228,7 @@ class BoardGame {
           p.innerHTML = letter;
         }
         var angle = Math.floor(Math.random() * 4) * 90;
-        div.setAttribute("style", "transform:rotate(" + angle + "deg)");
+        // div.setAttribute("style", "transform:rotate(" + angle + "deg)");
       }
       this.dom.appendChild(line);
     }
@@ -284,8 +322,10 @@ class BoardGame {
         this.totalScore += this.score(word);
         this.foundWords.push(word);
         this.updateScore();
-
+        this.updateFoundWords();
       }
+      this.solutionDictionary.removeWord(word);
+      // console.log(this.solutionDictionary);
     }
   }
 }
