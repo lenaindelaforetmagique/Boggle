@@ -107,36 +107,49 @@ class BoardGame {
     var thiz = this;
     this.dictionary = new DictionaryTree();
     this.dictionary.onload = function() {
-      console.log("start");
       thiz.resetGame();
     }
     this.dictionary.loadFile("FR_ods7.dic");
 
-
+    // == Buttons ==
     this.resetButton = document.getElementById("resetButton");
-    this.resetButton.onclick = function(e) {
-      thiz.resetGame();
-    }
-
     this.showSolutionButton = document.getElementById("solutionButton");
-    this.showSolutionButton.onclick = function(e) {
-      thiz.showSolutions();
-    }
-
     this.submitButton = document.getElementById("submitButton");
-    this.submitButton.onclick = function(e) {
-      thiz.textBox.submit();
-    }
-
     this.bckspButton = document.getElementById("bckspButton");
-    this.bckspButton.onclick = function(e) {
-      thiz.textBox.backspace();
-    }
-
     this.scoreCell = document.getElementById("scoreCell");
     this.solutionsBox = document.getElementById("solutionsBox");
+
+    this.load_events();
   }
 
+  load_events() {
+    var thiz = this;
+
+    var handleReset = function(e) {
+      console.log(e);
+      thiz.resetGame();
+    }
+    this.resetButton.addEventListener("mousedown", handleReset, false);
+    this.resetButton.addEventListener("touchstart", handleReset, false);
+
+    var handleShowSolution = function() {
+      thiz.showSolutions();
+    }
+    this.showSolutionButton.addEventListener("mousedown", handleShowSolution, false);
+    this.showSolutionButton.addEventListener("touchstart", handleShowSolution, false);
+
+    var handleSubmit = function() {
+      thiz.textBox.submit();
+    }
+    this.submitButton.addEventListener("mousedown", handleSubmit, false);
+    this.submitButton.addEventListener("touchstart", handleSubmit, false);
+
+    var handleBcksp = function() {
+      thiz.textBox.backspace();
+    }
+    this.bckspButton.addEventListener("mousedown", handleBcksp, false);
+    this.bckspButton.addEventListener("touchstart", handleBcksp, false);
+  }
 
   updateScore() {
     this.scoreCell.innerHTML = this.totalScore + " / " + this.maxScore + " points<br>" + this.foundWords.length + " / " + this.totalWords + " mots";
@@ -182,8 +195,6 @@ class BoardGame {
       // p_.setAttribute("class", "notFound");
       this.solutionsBox.appendChild(p_);
     }
-
-
   }
 
 
@@ -210,12 +221,12 @@ class BoardGame {
         var div = document.createElement("div");
         cell.appendChild(div);
         div.setAttribute("value", letter);
-        div.onclick = function(e) {
-          // console.log(this.firstChild.innerHTML);
+        var handleLetter = function() {
           thiz.textBox.appendLetter(this.getAttribute("value"));
-          // thiz.textBox.appendLetter(this.firstChild.innerHTML);
           thiz.textBox.update();
         }
+        div.addEventListener("mousedown", handleLetter, false);
+        div.addEventListener("touchstart", handleLetter, false);
 
         var p = document.createElement("p");
         div.appendChild(p);
@@ -259,7 +270,7 @@ class BoardGame {
     this.textBox.dictionary = this.solutionDictionary;
     this.totalWords = this.solutionDictionary.size;
 
-    console.log(this.solutions);
+    // console.log(this.solutions);
   }
 
 
