@@ -24,6 +24,10 @@ p {
   border-color: #CCCCCC;
 }
 
+#submitButton {
+  font-size: 30px;
+}
+
 #textBox {
   /* display: inline-block; */
   background: white;

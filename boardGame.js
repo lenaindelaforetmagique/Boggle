@@ -119,36 +119,54 @@ class BoardGame {
     this.scoreCell = document.getElementById("scoreCell");
     this.solutionsBox = document.getElementById("solutionsBox");
 
+    this.authorizedEvent = null;
     this.load_events();
+
+    this.mouseFired = false;
   }
 
   load_events() {
     var thiz = this;
-
     var handleReset = function(e) {
-      console.log(e);
-      thiz.resetGame();
+      if (e.type != "mousedown" || !thiz.mouseFired) {
+        thiz.resetGame();
+      }
     }
+
+    var handleShowSolution = function(e) {
+      if (e.type != "mousedown" || !thiz.mouseFired) {
+        thiz.showSolutions();
+      }
+    }
+
+    var handleSubmit = function(e) {
+      if (e.type != "mousedown" || !thiz.mouseFired) {
+        thiz.textBox.submit();
+      }
+    }
+
+    var handleBcksp = function(e) {
+      if (e.type != "mousedown" || !thiz.mouseFired) {
+        thiz.textBox.backspace();
+      }
+    }
+
     this.resetButton.addEventListener("mousedown", handleReset, false);
-    this.resetButton.addEventListener("touchstart", handleReset, false);
-
-    var handleShowSolution = function() {
-      thiz.showSolutions();
-    }
     this.showSolutionButton.addEventListener("mousedown", handleShowSolution, false);
-    this.showSolutionButton.addEventListener("touchstart", handleShowSolution, false);
-
-    var handleSubmit = function() {
-      thiz.textBox.submit();
-    }
     this.submitButton.addEventListener("mousedown", handleSubmit, false);
-    this.submitButton.addEventListener("touchstart", handleSubmit, false);
-
-    var handleBcksp = function() {
-      thiz.textBox.backspace();
-    }
     this.bckspButton.addEventListener("mousedown", handleBcksp, false);
+    // }
+
+    this.resetButton.addEventListener("touchstart", handleReset, false);
+    this.showSolutionButton.addEventListener("touchstart", handleShowSolution, false);
+    this.submitButton.addEventListener("touchstart", handleSubmit, false);
     this.bckspButton.addEventListener("touchstart", handleBcksp, false);
+    // } else {
+    document.addEventListener("touchstart", function(e) {
+      if (e.type == "touchstart") {
+        thiz.mouseFired = true;
+      }
+    }, false);
   }
 
   updateScore() {
@@ -221,9 +239,11 @@ class BoardGame {
         var div = document.createElement("div");
         cell.appendChild(div);
         div.setAttribute("value", letter);
-        var handleLetter = function() {
-          thiz.textBox.appendLetter(this.getAttribute("value"));
-          thiz.textBox.update();
+        var handleLetter = function(e) {
+          if (e.type != "mousedown" || !thiz.mouseFired) {
+            thiz.textBox.appendLetter(this.getAttribute("value"));
+            thiz.textBox.update();
+          }
         }
         div.addEventListener("mousedown", handleLetter, false);
         div.addEventListener("touchstart", handleLetter, false);
