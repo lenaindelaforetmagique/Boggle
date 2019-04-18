@@ -128,42 +128,42 @@ class BoardGame {
   load_events() {
     var thiz = this;
     var handleReset = function(e) {
-      if (e.type != "mousedown" || !thiz.mouseFired) {
+      if (e.type != "mouseup" || !thiz.mouseFired) {
         thiz.resetGame();
       }
     }
 
     var handleShowSolution = function(e) {
-      if (e.type != "mousedown" || !thiz.mouseFired) {
+      if (e.type != "mouseup" || !thiz.mouseFired) {
         thiz.showSolutions();
       }
     }
 
     var handleSubmit = function(e) {
-      if (e.type != "mousedown" || !thiz.mouseFired) {
+      if (e.type != "mouseup" || !thiz.mouseFired) {
         thiz.textBox.submit();
       }
     }
 
     var handleBcksp = function(e) {
-      if (e.type != "mousedown" || !thiz.mouseFired) {
+      if (e.type != "mouseup" || !thiz.mouseFired) {
         thiz.textBox.backspace();
       }
     }
 
-    this.resetButton.addEventListener("mousedown", handleReset, false);
-    this.showSolutionButton.addEventListener("mousedown", handleShowSolution, false);
-    this.submitButton.addEventListener("mousedown", handleSubmit, false);
-    this.bckspButton.addEventListener("mousedown", handleBcksp, false);
+    this.resetButton.addEventListener("mouseup", handleReset, false);
+    this.showSolutionButton.addEventListener("mouseup", handleShowSolution, false);
+    this.submitButton.addEventListener("mouseup", handleSubmit, false);
+    this.bckspButton.addEventListener("mouseup", handleBcksp, false);
     // }
 
-    this.resetButton.addEventListener("touchstart", handleReset, false);
-    this.showSolutionButton.addEventListener("touchstart", handleShowSolution, false);
-    this.submitButton.addEventListener("touchstart", handleSubmit, false);
-    this.bckspButton.addEventListener("touchstart", handleBcksp, false);
+    this.resetButton.addEventListener("touchend", handleReset, false);
+    this.showSolutionButton.addEventListener("touchend", handleShowSolution, false);
+    this.submitButton.addEventListener("touchend", handleSubmit, false);
+    this.bckspButton.addEventListener("touchend", handleBcksp, false);
     // } else {
-    document.addEventListener("touchstart", function(e) {
-      if (e.type == "touchstart") {
+    document.addEventListener("touchend", function(e) {
+      if (e.type == "touchend") {
         thiz.mouseFired = true;
       }
     }, false);
@@ -240,13 +240,13 @@ class BoardGame {
         cell.appendChild(div);
         div.setAttribute("value", letter);
         var handleLetter = function(e) {
-          if (e.type != "mousedown" || !thiz.mouseFired) {
+          if (e.type != "mouseup" || !thiz.mouseFired) {
             thiz.textBox.appendLetter(this.getAttribute("value"));
             thiz.textBox.update();
           }
         }
-        div.addEventListener("mousedown", handleLetter, false);
-        div.addEventListener("touchstart", handleLetter, false);
+        div.addEventListener("mouseup", handleLetter, false);
+        div.addEventListener("touchend", handleLetter, false);
 
         var p = document.createElement("p");
         div.appendChild(p);
