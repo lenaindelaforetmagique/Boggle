@@ -260,7 +260,7 @@ class BoardGame {
           p.innerHTML = letter;
         }
         var angle = Math.floor(Math.random() * 4) * 90;
-        // div.setAttribute("style", "transform:rotate(" + angle + "deg)");
+        div.setAttribute("style", "transform:rotate(" + angle + "deg)");
       }
       this.dom.appendChild(line);
     }
